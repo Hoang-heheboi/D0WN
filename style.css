@@ -131,7 +131,6 @@ body {
   background: crimson;
   /* downward-pointing triangle */
   clip-path: polygon(50% 100%, 0% 0%, 100% 0%);
-  border: 10px solid black;
 }
 
 /* warning removed per user request */

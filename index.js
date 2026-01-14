@@ -20,23 +20,30 @@ let paused = false;
 let isGameOver = false;
 
 function showPauseMenu() {
-  paused = true;
-  if (rafHandle) cancelAnimationFrame(rafHandle);
-  // stop spawning while paused
-  spawning = false;
-  pauseMenu.classList.remove('hidden');
+  setPaused(true);
 }
 
 function hidePauseMenu() {
-  paused = false;
-  pauseMenu.classList.add('hidden');
-  lastAnim = null; // reset timing so dt isn't huge
-  // only resume animation if the game isn't over
-  if (!isGameOver) {
-    // resume spawning and animation
-    spawning = true;
-    spawnLoop();
-    rafHandle = requestAnimationFrame(mainLoop);
+  setPaused(false);
+}
+
+// central pause/resume function to keep state consistent
+function setPaused(state) {
+  if (state) {
+    paused = true;
+    if (rafHandle) cancelAnimationFrame(rafHandle);
+    spawning = false;
+    pauseMenu.classList.remove('hidden');
+    lastAnim = null;
+  } else {
+    paused = false;
+    pauseMenu.classList.add('hidden');
+    lastAnim = null; // reset timing so dt isn't huge
+    if (!isGameOver) {
+      spawning = true;
+      spawnLoop();
+      rafHandle = requestAnimationFrame(mainLoop);
+    }
   }
 }
 
@@ -55,14 +62,29 @@ resumeBtn?.addEventListener('click', () => { hidePauseMenu(); });
 quitBtn?.addEventListener('click', () => { /* implement later if needed */ location.reload(); });
 restartBtn?.addEventListener('click', () => { restartGame(); });
 
-// toggle pause with Shift key
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Shift' && !e.repeat) {
+// toggle pause with Shift key — use capturing listener and check both key/code
+function pauseKeyHandler(e) {
+  const isShift = e.key === 'Shift' || e.code === 'ShiftLeft' || e.code === 'ShiftRight';
+  if (isShift && !e.repeat) {
     if (isGameOver) return; // don't allow pausing when game is over
-    if (!paused) showPauseMenu();
-    else hidePauseMenu();
+    setPaused(!paused);
   }
-});
+}
+
+let pauseHandlerAttached = false;
+function attachPauseHandler() {
+  if (pauseHandlerAttached) return;
+  window.addEventListener('keydown', pauseKeyHandler, true);
+  pauseHandlerAttached = true;
+}
+function detachPauseHandler() {
+  if (!pauseHandlerAttached) return;
+  window.removeEventListener('keydown', pauseKeyHandler, true);
+  pauseHandlerAttached = false;
+}
+
+// attach initially
+attachPauseHandler();
 
 function highlightKey(letter) {
   const el = ({'a': keyAEl, 's': keySEl, 'd': keyDEl})[letter];
@@ -190,6 +212,7 @@ const activeObstacles = new Set();
 let spawning = true;
 
 function animateObstacles(dt) {
+  if (paused || isGameOver) return;
   const removeList = [];
   activeObstacles.forEach(o => {
 
@@ -262,6 +285,8 @@ function spawnLoop() {
 // We replace the existing scroll loop with a small wrapper that calls scroll and animates obstacles
 let rafHandle = null;
 function mainLoop(timestamp) {
+  // if paused or game-over, stop requesting frames here
+  if (paused || isGameOver) { lastAnim = null; rafHandle = null; return; }
   if (!lastAnim) lastAnim = timestamp;
   const dt = (timestamp - lastAnim) / 1000; // seconds
   lastAnim = timestamp;
@@ -304,6 +329,15 @@ function restartGame() {
   hideGameOverMenu();
   isGameOver = false;
   paused = false;
+  // ensure pause menu hidden and input focus cleared so key events reach document
+  pauseMenu.classList.add('hidden');
+  try { if (document.activeElement && typeof document.activeElement.blur === 'function') document.activeElement.blur(); } catch (e) {}
+  // reattach pause handler to ensure it's active after restart
+  try {
+    // detach any previous attachment and reattach via helpers
+    detachPauseHandler();
+  } catch (e) {}
+  attachPauseHandler();
   // reset motion variables
   y = 0;
   speed = INITIAL_SPEED;
