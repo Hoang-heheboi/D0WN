@@ -139,7 +139,7 @@ document.addEventListener("keydown", (e) => {
 let y = 0;
 // speed is in px/second, accel is px/second^2
 const INITIAL_SPEED = 100; // initial speed (px/s)
-const INITIAL_ACCEL = 30; // acceleration (px/s^2)
+const INITIAL_ACCEL = 20; // acceleration (px/s^2)
 let speed = INITIAL_SPEED;
 let accel = INITIAL_ACCEL; // increases speed over time
 const SPIKE_SCALE = 1.0; // 1.0 = same size as player, <1 smaller, >1 bigger
