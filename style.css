@@ -1,0 +1,139 @@
+/* Background container uses a CSS background-image for smooth scrolling */
+#background {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30%; /* centered width */
+  height: 100%;
+  background-image: url("Space backgound DOWN!.png");
+  background-repeat: repeat-y;
+  background-size: 100% auto; /* fit to the div's width */
+  background-position: center 0;
+  z-index: 0;
+}
+
+body {
+  background-color: rgb(47, 52, 51);
+  margin: 0;
+  overflow: hidden;
+}
+
+.backgroundBox {
+   display: flex; 
+  justify-content: center;
+}
+
+#playerCube {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 5%;
+  border: 10px solid black;
+  border-radius: 20%;
+  transition: left 0.1s linear;
+  z-index: 10;
+}
+
+/* On-screen controls */
+#controls {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 50;
+}
+
+.key {
+  width: 56px;
+  height: 56px;
+  display: inline-grid;
+  place-items: center;
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  font-weight: 700;
+  font-family: sans-serif;
+  border-radius: 8px;
+  border: 2px solid rgba(255,255,255,0.08);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  user-select: none;
+  cursor: pointer;
+  transition: transform 0.08s linear, box-shadow 0.12s ease, background 0.08s;
+}
+
+.key.active {
+  background: linear-gradient(180deg, #fff 0%, #ffd 40%);
+  color: #111;
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 20px rgba(255,220,80,0.45);
+}
+
+/* Menus (pause / game over) */
+.menu {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(0,0,0,0.45);
+  z-index: 200;
+}
+.menu.hidden { display: none; }
+.menuContent {
+  background: #111;
+  color: #fff;
+  padding: 24px 28px;
+  border-radius: 10px;
+  text-align: center;
+  min-width: 280px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+}
+/* Larger styling specifically for the Game Over modal */
+#gameOverMenu .menuContent {
+  min-width: 520px;
+  padding: 36px 44px;
+  border-radius: 14px;
+}
+#gameOverMenu h1 { font-size: 48px; margin: 0 0 12px; letter-spacing: 1px; }
+#gameOverMenu .menuButtons button#restartBtn { padding: 14px 26px; font-size: 18px; }
+
+/* Slightly larger Pause modal when opened with Shift */
+#pauseMenu .menuContent {
+  min-width: 420px;
+  padding: 30px 36px;
+  border-radius: 12px;
+}
+#pauseMenu h2 { font-size: 32px; margin: 0 0 8px; }
+#pauseMenu .menuButtons button { padding: 12px 20px; font-size: 16px; }
+.menuButtons { margin-top: 16px; display: flex; gap: 10px; justify-content: center; }
+.menu button { padding: 10px 16px; border-radius: 8px; border: none; cursor: pointer; font-weight: 700; }
+.menu button#resumeBtn, .menu button#restartBtn { background: #28a745; color: #fff; }
+.menu button#quitBtn { background: #c0392b; color: #fff; }
+.menu .hint { opacity: 0.8; margin-top: 8px; font-size: 13px; }
+
+/* Obstacles and warnings */
+.obstacle {
+  position: absolute;
+  width: 5%; /* match player's width */
+  aspect-ratio: 1 / 1; /* make triangle proportional to its width */
+  height: auto;
+  top: -6%; /* start just above viewport */
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 9;
+}
+
+.triangle {
+  width: 100%;
+  height: 100%;
+  background: crimson;
+  /* downward-pointing triangle */
+  clip-path: polygon(50% 100%, 0% 0%, 100% 0%);
+  border: 10px solid black;
+}
+
+/* warning removed per user request */
+
+

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOWN! game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="controls" aria-hidden="false">
+    <div class="key" id="keyA">A</div>
+    <div class="key" id="keyS">S</div>
+    <div class="key" id="keyD">D</div>
+</div>
+
+<div class="backgroundBox">
+    <div id="background" aria-hidden="true"></div>
+</div>
+
+<img id="playerCube" src="cube.png" alt="Player">
+
+<!-- Pause menu -->
+<div id="pauseMenu" class="menu hidden" role="dialog" aria-modal="true">
+    <div class="menuContent">
+        <h2>Paused</h2>
+        <div class="menuButtons">
+            <button id="resumeBtn">Resume (Shift)</button>
+            <button id="quitBtn">Quit</button>
+        </div>
+        <p class="hint">Press <strong>Shift</strong> to resume</p>
+    </div>
+</div>
+
+<!-- Game over menu -->
+<div id="gameOverMenu" class="menu hidden" role="dialog" aria-modal="true">
+    <div class="menuContent">
+        <h1>Game Over</h1>
+        <div class="menuButtons">
+            <button id="restartBtn">Restart</button>
+        </div>
+    </div>
+</div>
+
+<script src="index.js"></script>
+
+</body>
+</html>
