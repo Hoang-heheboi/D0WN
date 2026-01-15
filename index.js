@@ -9,6 +9,12 @@ const keyAEl = document.getElementById('keyA');
 const keySEl = document.getElementById('keyS');
 const keyDEl = document.getElementById('keyD');
 
+let score = 0;
+let scoreTimer = 0; // used to accumulate time smoothly
+
+const scoreEl = document.getElementById("score");
+
+
 // menus
 const pauseMenu = document.getElementById('pauseMenu');
 const resumeBtn = document.getElementById('resumeBtn');
@@ -299,6 +305,18 @@ function mainLoop(timestamp) {
   // animate obstacles (they follow background via `y` values)
   animateObstacles(dt);
 
+// add score over time (1 point per second)
+scoreTimer += dt;
+if (scoreTimer >= 1) {
+  score += Math.floor(scoreTimer);
+  scoreTimer %= 1;
+
+  if (scoreEl) {
+    scoreEl.textContent = `Gravity: ${score} Newtons`;
+  }
+}
+
+
   rafHandle = requestAnimationFrame(mainLoop);
 }
 
@@ -325,6 +343,10 @@ function gameOver() {
 }
 
 function restartGame() {
+  score = 0;
+scoreTimer = 0;
+if (scoreEl) scoreEl.textContent = "Score: 0";
+
   // hide UI and clear game-over state
   hideGameOverMenu();
   isGameOver = false;
@@ -353,5 +375,6 @@ function restartGame() {
   spawnLoop();
   rafHandle = requestAnimationFrame(mainLoop);
 }
+
 
 
